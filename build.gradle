@@ -1,0 +1,81 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+
+
+	id 'org.springframework.boot' version '3.0.0'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.jetbrains.kotlin.jvm' version '1.7.21'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.7.21'
+	id 'org.jetbrains.kotlin.plugin.jpa' version '1.7.21'
+}
+
+group = 'com.stasikowski.playground'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('testcontainersVersion', "1.17.6")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
+	implementation 'io.micrometer:micrometer-tracing'
+	implementation 'net.ttddyy.observation:datasource-micrometer-spring-boot:1.0.1'
+	implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	implementation(platform("io.opentelemetry:opentelemetry-bom:1.23.1"))
+	implementation 'io.opentelemetry:opentelemetry-api'
+	implementation 'io.opentelemetry:opentelemetry-sdk'
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+	implementation 'io.opentelemetry:opentelemetry-extension-trace-propagators'
+//	implementation 'io.temporal:temporal-opentracing:1.16.0'
+	implementation 'io.opentelemetry:opentelemetry-opentracing-shim:1.16.0-alpha'
+	implementation 'io.opentelemetry:opentelemetry-semconv:1.16.0-alpha'
+////	implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-starter:1.16.0-alpha'
+//	implementation 'io.opentelemetry.instrumentation:opentelemetry-jdbc:1.16.0-alpha'
+//	implementation 'io.opentelemetry.instrumentation:opentelemetry-kafka-clients-2.6:1.16.0-alpha'
+//	implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-kafka-2.7:1.16.0-alpha'
+//	implementation 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.16.0-alpha'
+//	implementation 'io.opentracing.contrib:opentracing-kafka-spring:0.1.15'
+
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.postgresql:postgresql:42.5.1'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:kafka'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+	}
+}
+
+tasks.withType(KotlinCompile) {
+	kotlinOptions {
+		freeCompilerArgs = ['-Xjsr305=strict']
+		jvmTarget = '17'
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

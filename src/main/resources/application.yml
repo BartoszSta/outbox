@@ -1,0 +1,20 @@
+spring.application.name: outbox
+#spring.profiles.active: json-logging
+spring.jpa:
+  properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  hibernate.ddl-auto: none
+  hibernate.show-sql: true
+spring.datasource:
+  url: jdbc:postgresql://localhost:5432/outbox
+  username: outbox-user
+  password: outbox-pwd
+
+server.port: 8080
+management.server.port: 8079
+management.endpoints.web.exposure.include: info, health, prometheus
+management.tracing.enabled: true
+management.tracing.sampling.probability: 1.0
+management.otlp.metrics.export.url: https://localhost:4318/v1/metrics
+
+#management.endpoints.enabled-by-default: false
+#management.endpoint.info.enabled: true

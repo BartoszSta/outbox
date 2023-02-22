@@ -1,0 +1,37 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  jaeger:
+    endpoint: "http://jaeger-allinone:14250"
+    tls:
+      insecure: true
+#  prometheus:
+#    endpoint: 'prometheus:9090'
+#    namespace: test-space
+#    send_timestamps: true
+#    metric_expiration: 180m
+#    resource_to_telemetry_conversion:
+#      enabled: true
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [jaeger]
+#    metrics:
+#      receivers: [otlp]
+#      exporters: [prometheus]

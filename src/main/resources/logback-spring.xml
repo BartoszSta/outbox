@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="boundedContext" source="spring.application.bounded-context"/>
+    <springProperty name="context" source="spring.application.name"/>
+    <springProfile name="json-logging">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>traceId</includeMdcKeyName>
+                <includeMdcKeyName>spanId</includeMdcKeyName>
+            </encoder>
+            <customFields>
+                {"boundedContext":"${boundedContext}"}
+            </customFields>
+        </appender>
+    </springProfile>
+    <springProfile name="!json-logging">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <Pattern>
+                    %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] [${context},%X{traceId},%X{spanId}] %yellow(%C{1}): %msg%n%throwable
+                </Pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+
+</configuration>
